@@ -1,0 +1,2 @@
+# jaktools
+Stock Automation Tool
