@@ -30,8 +30,8 @@
 		  var a = $("#code").val();
 		  var b = $("#date").val();
 		  var c = $("#date2").val();
-		  let url = 'http://127.0.0.1:8000/tick';
-		  alert('确定发送')
+		  let url = 'http://39.105.206.240:8000/tick';
+		  //alert('确定发送')
 		  //向服务器发送get请求，请求地址为demo_add
             $.get(url, { 'a': a, 'b': b , 'c':c}, function (ret) {
 			//请求结果为ret，将请求结果赋值给id为result的节点
