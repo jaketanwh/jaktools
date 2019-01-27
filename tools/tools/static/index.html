@@ -13,9 +13,10 @@
   <p>
     日期: <input type="text" id="date" name="date">
   </p>
-   <p><span id='result'></span></p >
-    <button type="button" id='sum'>发 送</button>
+      <button type="button" id='sum'>发 送</button>
 	<style>button{width:100px;height:50px;}</style>
+  <div id="chartmain" style="width:600px; height: 400px;"></div>
+
 	<script type="text/javascript">
 	  //这里是关键点 .ready 函数好像监听器。
 	  $(document).ready(function () {
@@ -29,19 +30,111 @@
 		  //向服务器发送get请求，请求地址为demo_add
             $.get(url, { 'a': a, 'b': b }, function (ret) {
 			//请求结果为ret，将请求结果赋值给id为result的节点
+                var date = [];
+                var data = [];
                 var result = $.parseJSON(ret.tick)
-                var tabStr = "<table border='1'>";
+                //var tabStr = "<table border='1'>";
+                var sum = 0;
                 $.each(result, function (i, d) {
+                    date.push(d.time);
+                    if (d.type == '买盘')
+                    {
+                        sum = sum + d.volume;
+                    }
+                    else if(d.type == '卖盘')
+                    {
+                        sum = sum - d.volume;
+                    }
+                    /*else
+                    {
+
+                    }*/
+                    data.push(sum)
+                    /*
                     tabStr += "<tr><td>" + d.time
                             + "</td><td>" + d.price
                             + "</td><td>" + d.change
                             + "</td><td>" + d.volume
                             + "</td><td>" + d.amount
                             + "</td><td>" + d.type
-                            + "</td></tr>";
+                            + "</td></tr>";*/
                 });
-                 tabStr += "</table>";
-			$('#result').html(tabStr)
+                 //tabStr += "</table>";
+			//$('#result').html(tabStr)
+                option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        position: function (pt) {
+                            return [pt[0], '10%'];
+                        }
+                    },
+                    title: {
+                        left: 'center',
+                        text: '大数据量面积图',
+                    },
+                    toolbox: {
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: 'none'
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: date
+                    },
+                    yAxis: {
+                        type: 'value',
+                        boundaryGap: [0, '100%']
+                    },
+                    dataZoom: [{
+                        type: 'inside',
+                        start: 0,
+                        end: 10
+                    }, {
+                        start: 0,
+                        end: 10,
+                        handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                        handleSize: '80%',
+                        handleStyle: {
+                            color: '#fff',
+                            shadowBlur: 3,
+                            shadowColor: 'rgba(0, 0, 0, 0.6)',
+                            shadowOffsetX: 2,
+                            shadowOffsetY: 2
+                        }
+                    }],
+                    series: [
+                        {
+                            name:'模拟数据',
+                            type:'line',
+                            smooth:true,
+                            symbol: 'none',
+                            sampling: 'average',
+                            itemStyle: {
+                                color: 'rgb(255, 70, 131)'
+                            },
+                            areaStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: 'rgb(255, 158, 68)'
+                                }, {
+                                    offset: 1,
+                                    color: 'rgb(255, 70, 131)'
+                                }])
+                            },
+                            data: data
+                        }
+                    ]
+                };
+            //初始化echarts实例
+            var myChart = echarts.init(document.getElementById('chartmain'));
+
+            //使用制定的配置项和数据显示图表
+            myChart.setOption(option);
 		  })
 		});
 	  });
