@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="Access-Control-Allow-Origin" content="text/html;charset=UTF-8">
+  <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.js"></script>
+</head>
+<body>
+  <p><font size="5px">多空量能趋势线</font></p >
+  <p>
+    代码: <input type="text" id="code" name="code">
+  </p>
+  <p>
+    日期: <input type="text" id="date" name="date">
+  </p>
+   <p><span id='result'></span></p >
+    <button type="button" id='sum'>发 送</button>
+	<style>button{width:100px;height:50px;}</style>
+	<script type="text/javascript">
+	  //这里是关键点 .ready 函数好像监听器。
+	  $(document).ready(function () {
+	  //jq的处理函数，当点击提交按钮时执行。
+		$("#sum").click(function () {
+		  //得到页面中id为a和b两个标签的值
+		  var a = $("#code").val();
+		  var b = $("#date").val();
+		  let url = 'http://127.0.0.1:8000/tick';
+		  alert('确定发送')
+		  //向服务器发送get请求，请求地址为demo_add
+            $.get(url, { 'a': a, 'b': b }, function (ret) {
+			//请求结果为ret，将请求结果赋值给id为result的节点
+                var result = $.parseJSON(ret.tick)
+                var tabStr = "<table border='1'>";
+                $.each(result, function (i, d) {
+                    tabStr += "<tr><td>" + d.time
+                            + "</td><td>" + d.price
+                            + "</td><td>" + d.change
+                            + "</td><td>" + d.volume
+                            + "</td><td>" + d.amount
+                            + "</td><td>" + d.type
+                            + "</td></tr>";
+                });
+                 tabStr += "</table>";
+			$('#result').html(tabStr)
+		  })
+		});
+	  });
+	</script>
+</body>
+</html>
