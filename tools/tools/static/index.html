@@ -4,14 +4,18 @@
   <meta charset="utf-8"/>
   <meta http-equiv="Access-Control-Allow-Origin" content="text/html;charset=UTF-8">
   <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.js"></script>
+    <script type="text/javascript" src="js/echarts.js"></script>
 </head>
 <body>
-  <p><font size="5px">多空量能趋势线</font></p >
+  <p><font size="5px">主买卖趋势线</font></p >
   <p>
-    代码: <input type="text" id="code" name="code">
+    代码（300080）: <input type="text" id="code" name="code">
   </p>
   <p>
-    日期: <input type="text" id="date" name="date">
+    开始日期（2019-01-21）: <input type="text" id="date" name="date">
+  </p>
+   <p>
+    结束日期（2019-01-26）: <input type="text2" id="date2" name="date2">
   </p>
       <button type="button" id='sum'>发 送</button>
 	<style>button{width:100px;height:50px;}</style>
@@ -25,10 +29,11 @@
 		  //得到页面中id为a和b两个标签的值
 		  var a = $("#code").val();
 		  var b = $("#date").val();
+		  var c = $("#date2").val();
 		  let url = 'http://127.0.0.1:8000/tick';
 		  alert('确定发送')
 		  //向服务器发送get请求，请求地址为demo_add
-            $.get(url, { 'a': a, 'b': b }, function (ret) {
+            $.get(url, { 'a': a, 'b': b , 'c':c}, function (ret) {
 			//请求结果为ret，将请求结果赋值给id为result的节点
                 var date = [];
                 var data = [];
@@ -70,7 +75,7 @@
                     },
                     title: {
                         left: 'center',
-                        text: '大数据量面积图',
+                        text: '主买卖趋势线',
                     },
                     toolbox: {
                         feature: {
